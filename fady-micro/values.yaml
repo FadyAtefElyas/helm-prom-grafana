@@ -1,0 +1,48 @@
+ReleaseName: frontend
+frontendRequestsCPU: "100m"
+frontendRequestsMemory: "64Mi"
+frontendLimitsCPU: "200m"
+frontendLimitsMemory: "128Mi"
+containerPort: 8080
+containerName: server
+containerImage: gcr.io/google-samples/microservices-demo/frontend:v0.2.3
+
+initialDelaySeconds: 10
+httpGetPath: /_healthz
+httpGetPort: 8080
+httpHeadersName: cookie
+httpHeadersValue: shop_session-id=x-readiness-probe
+httpHeadersSecValue: shop_session-id=x-liveness-probe
+env:  
+  port: "8080"
+  productCatalogServiceAddr: "productcatalogservice:3550"
+  currencyServiceAddr: "currencyservice:7000"
+  cartServiceAddr: "cartservice:7070"
+  recommendationServiceAddr: "recommendationservice:8080"
+  shippingServiceAddr: "shippingservice:50051"
+  checkoutServiceAddr: "checkoutservice:5050"
+  adServiceAddr: "adservice:9555"
+service:
+  name: frontend
+  type: ClusterIP
+  ports:
+    name: http
+    port: 80
+    targetPort: 8080
+# env:
+#   - name: PORT
+#     value: "8080"
+#   - name: PRODUCT_CATALOG_SERVICE_ADDR
+#     value: "productcatalogservice:3550"
+#   - name: CURRENCY_SERVICE_ADDR
+#     value: "currencyservice:7000"
+#   - name: CART_SERVICE_ADDR
+#     value: "cartservice:7070"
+#   - name: RECOMMENDATION_SERVICE_ADDR
+#     value: "recommendationservice:8080"
+#   - name: SHIPPING_SERVICE_ADDR
+#     value: "shippingservice:50051"
+#   - name: CHECKOUT_SERVICE_ADDR
+#     value: "checkoutservice:5050"
+#   - name: AD_SERVICE_ADDR
+#     value: "adservice:9555"

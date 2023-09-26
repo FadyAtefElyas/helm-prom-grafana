@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ReleaseName }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.ReleaseName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.ReleaseName }}
+    spec:
+      containers:
+        - name: {{ .Values.containerName }}
+          image: {{ .Values.containerImage }}
+          ports:
+          - containerPort: {{ .Values.containerPort }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }} 
+            httpGet:
+              path: {{ .Values.httpGetPath }}
+              port: {{ .Values.httpGetPort }}
+              httpHeaders:
+              - name: {{ .Values.httpHeadersName }}
+                value: {{ .Values.httpHeadersValue  }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }} 
+            httpGet:
+              path: {{ .Values.httpGetPath }}
+              port: {{ .Values.httpGetPort }} 
+              httpHeaders:
+              - name: {{ .Values.httpHeadersName }} 
+                value: {{ .Values.httpHeadersSecValue }} 
+          env:
+          {{- range $key, $val :=  .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $val }}"
+          {{- end }}
+          resources:
+            requests:
+              cpu: {{ .Values.frontendRequestsCPU }}
+              memory: {{ .Values.frontendRequestsMemory }}
+            limits:
+              cpu: {{ .Values.frontendLimitsCPU }}
+              memory: {{ .Values.frontendLimitsMemory }}
